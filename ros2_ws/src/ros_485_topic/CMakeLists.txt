@@ -17,9 +17,12 @@ find_package(std_msgs REQUIRED)
 add_executable(serial_topic_pub src/serial_topic_pub.cpp)
 ament_target_dependencies(serial_topic_pub rclcpp std_msgs)
 
+add_executable(topic_RS485_sub src/topic_RS485_sub.cpp)
+ament_target_dependencies(topic_RS485_sub rclcpp std_msgs)
+
 install(TARGETS
   serial_topic_pub
- 
+  topic_RS485_sub
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
