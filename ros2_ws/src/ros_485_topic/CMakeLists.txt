@@ -20,7 +20,11 @@ ament_target_dependencies(serial_topic_pub rclcpp std_msgs)
 add_executable(topic_RS485_sub src/topic_RS485_sub.cpp)
 ament_target_dependencies(topic_RS485_sub rclcpp std_msgs)
 
+add_executable(serial_topic_pub_V2 src/serial_topic_pub_V2.cpp)
+ament_target_dependencies(serial_topic_pub_V2 rclcpp std_msgs)
+
 install(TARGETS
+  serial_topic_pub_V2
   serial_topic_pub
   topic_RS485_sub
   DESTINATION lib/${PROJECT_NAME})
