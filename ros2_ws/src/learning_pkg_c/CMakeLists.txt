@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(ros_485_topic)
+project(learning_pkg_c)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -10,33 +10,6 @@ find_package(ament_cmake REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
-
-find_package(rclcpp REQUIRED)
-find_package(std_msgs REQUIRED)
-
-add_executable(serial_topic_pub src/serial_topic_pub.cpp)
-ament_target_dependencies(serial_topic_pub rclcpp std_msgs)
-
-<<<<<<< HEAD
-add_executable(topic_RS485_sub src/topic_RS485_sub.cpp)
-ament_target_dependencies(topic_RS485_sub rclcpp std_msgs)
-
-add_executable(serial_topic_pub_V2 src/serial_topic_pub_V2.cpp)
-ament_target_dependencies(serial_topic_pub_V2 rclcpp std_msgs)
-=======
-add_executable(serial_topic_sub src/serial_topic_sub.cpp)
-ament_target_dependencies(serial_topic_sub rclcpp std_msgs)
->>>>>>> 93dce7b (循环缓冲数组)
-
-install(TARGETS
-  serial_topic_pub_V2
-  serial_topic_pub
-<<<<<<< HEAD
-  topic_RS485_sub
-=======
-  serial_topic_sub
->>>>>>> 93dce7b (循环缓冲数组)
-  DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
