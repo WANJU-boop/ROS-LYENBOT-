@@ -1,38 +1,38 @@
 /***
-@×÷Õß: ¹ÅÔÂ¾Ó(www.guyuehome.com) & Gemini
-@ËµÃ÷: ROS2»°ÌâÊ¾Àı-¶©ÔÄ¡°Hello World¡±»°ÌâÏûÏ¢, ²¢Ê¹ÓÃ»·ĞÎ»º³åÇø½âÎö´òÓ¡
+@ä½œè€…: å¤æœˆå±…(www.guyuehome.com) & Gemini
+@è¯´æ˜: ROS2è¯é¢˜ç¤ºä¾‹-è®¢é˜…â€œHello Worldâ€è¯é¢˜æ¶ˆæ¯, å¹¶ä½¿ç”¨ç¯å½¢ç¼“å†²åŒºè§£ææ‰“å°
 ***/
 
 #include <memory>
 #include <vector>
 #include <string>
 
-#include "rclcpp/rclcpp.hpp"              // ROS2 C++½Ó¿Ú¿â
-#include "std_msgs/msg/string.hpp"        // ×Ö·û´®ÏûÏ¢ÀàĞÍ
+#include "rclcpp/rclcpp.hpp"              // ROS2 C++æ¥å£åº“
+#include "std_msgs/msg/string.hpp"        // å­—ç¬¦ä¸²æ¶ˆæ¯ç±»å‹
 
-// Ê¹ÓÃ std::placeholders::_1 À´°ó¶¨»Øµ÷º¯Êı
+// ä½¿ç”¨ std::placeholders::_1 æ¥ç»‘å®šå›è°ƒå‡½æ•°
 using std::placeholders::_1;
 
-// Ö¸ÁîµÄ×îĞ¡³¤¶È
+// æŒ‡ä»¤çš„æœ€å°é•¿åº¦
 #define COMMAND_MIN_LENGTH 4
-// Ñ­»·»º³åÇø´óĞ¡
+// å¾ªç¯ç¼“å†²åŒºå¤§å°
 #define BUFFER_SIZE 128
-// Ñ­»·»º³åÇø
+// å¾ªç¯ç¼“å†²åŒº
 uint8_t buffer[BUFFER_SIZE];
-// Ñ­»·»º³åÇø¶ÁË÷Òı
+// å¾ªç¯ç¼“å†²åŒºè¯»ç´¢å¼•
 uint8_t readIndex = 0;
-// Ñ­»·»º³åÇøĞ´Ë÷Òı
+// å¾ªç¯ç¼“å†²åŒºå†™ç´¢å¼•
 uint8_t writeIndex = 0;
 
 
 class Buff_Ring 
 {
 public:
-    // ½«Êı¾İĞ´Èë»·ĞÎ»º³åÇø
+    // å°†æ•°æ®å†™å…¥ç¯å½¢ç¼“å†²åŒº
     uint8_t Command_Write(const uint8_t *data, uint8_t length)
     {
         if (Command_GetRemain() < length)
-            return 0; // Ê£Óà¿Õ¼ä²»×ã
+            return 0; // å‰©ä½™ç©ºé—´ä¸è¶³
 
         if (writeIndex + length < BUFFER_SIZE)
         {
@@ -49,52 +49,52 @@ public:
         return length;
     }
 
-    // ´Ó»·ĞÎ»º³åÇøÖĞ»ñÈ¡Ò»ÌõÍêÕûµÄÖ¸Áî
+    // ä»ç¯å½¢ç¼“å†²åŒºä¸­è·å–ä¸€æ¡å®Œæ•´çš„æŒ‡ä»¤
     uint8_t Command_GetCommand(uint8_t *command)
     {
-        // Ñ­»·Ñ°ÕÒÍêÕûÖ¸Áî
+        // å¾ªç¯å¯»æ‰¾å®Œæ•´æŒ‡ä»¤
         while (1)
         {
-            // Èç¹û»º³åÇøÊı¾İ³¤¶ÈĞ¡ÓÚ×îĞ¡Ö¸Áî³¤¶È£¬Ôò²»¿ÉÄÜÓĞÍêÕûµÄÖ¸Áî
+            // å¦‚æœç¼“å†²åŒºæ•°æ®é•¿åº¦å°äºæœ€å°æŒ‡ä»¤é•¿åº¦ï¼Œåˆ™ä¸å¯èƒ½æœ‰å®Œæ•´çš„æŒ‡ä»¤
             if (Command_GetLength() < COMMAND_MIN_LENGTH)
                 return 0;
 
-            // Èç¹û²»ÊÇ°üÍ·(0xAA)£¬ÔòÌø¹ıÒ»¸ö×Ö½Ú£¬ÖØĞÂ¿ªÊ¼Ñ°ÕÒ
+            // å¦‚æœä¸æ˜¯åŒ…å¤´(0xAA)ï¼Œåˆ™è·³è¿‡ä¸€ä¸ªå­—èŠ‚ï¼Œé‡æ–°å¼€å§‹å¯»æ‰¾
             if (Command_Read(readIndex) != 0xAA)
             {
                 Command_AddReadIndex(1);
                 continue;
             }
 
-            // »ñÈ¡Ö¸Áî³¤¶È×Ö½Ú
+            // è·å–æŒ‡ä»¤é•¿åº¦å­—èŠ‚
             uint8_t length = Command_Read(readIndex + 1);
-            if (length < COMMAND_MIN_LENGTH) // »ù±¾µÄ³¤¶È¼ì²é
+            if (length < COMMAND_MIN_LENGTH) // åŸºæœ¬çš„é•¿åº¦æ£€æŸ¥
             {
                 Command_AddReadIndex(1);
                 continue;
             }
 
-            // Èç¹û»º³åÇøÖĞµÄÊı¾İ³¤¶ÈĞ¡ÓÚÖ¸ÁîĞû³ÆµÄ³¤¶È£¬ÔòÊı¾İ²»ÍêÕû
+            // å¦‚æœç¼“å†²åŒºä¸­çš„æ•°æ®é•¿åº¦å°äºæŒ‡ä»¤å®£ç§°çš„é•¿åº¦ï¼Œåˆ™æ•°æ®ä¸å®Œæ•´
             if (Command_GetLength() < length)
             {
                 return 0;
             }
 
-            // ¼ÆËãĞ£ÑéºÍ
+            // è®¡ç®—æ ¡éªŒå’Œ
             uint8_t sum = 0;
             for (uint8_t i = 0; i < length - 1; i++) 
             {
                 sum += Command_Read(readIndex + i);
             }
 
-            // Èç¹ûĞ£ÑéºÍ²»ÕıÈ·£¬ÔòÌø¹ıÒ»¸ö×Ö½Ú£¬ÖØĞÂ¿ªÊ¼Ñ°ÕÒ
+            // å¦‚æœæ ¡éªŒå’Œä¸æ­£ç¡®ï¼Œåˆ™è·³è¿‡ä¸€ä¸ªå­—èŠ‚ï¼Œé‡æ–°å¼€å§‹å¯»æ‰¾
             if (sum != Command_Read(readIndex + length - 1)) 
             {
                 Command_AddReadIndex(1);
                 continue;
             }
 
-            // Èç¹ûÕÒµ½ÍêÕûÖ¸Áî£¬Ôò½«Ö¸Áî¸´ÖÆµ½ command »º³åÇø£¬²¢·µ»ØÖ¸Áî³¤¶È
+            // å¦‚æœæ‰¾åˆ°å®Œæ•´æŒ‡ä»¤ï¼Œåˆ™å°†æŒ‡ä»¤å¤åˆ¶åˆ° command ç¼“å†²åŒºï¼Œå¹¶è¿”å›æŒ‡ä»¤é•¿åº¦
             for (uint8_t i = 0; i < length; i++) 
             {
                 command[i] = Command_Read(readIndex + i);
@@ -104,13 +104,13 @@ public:
         }
     }
 
-    // [ĞÂÔö] ´òÓ¡Ö¸ÁîÄÚÈİµÄº¯Êı
+    // [æ–°å¢] æ‰“å°æŒ‡ä»¤å†…å®¹çš„å‡½æ•°
     void Command_Print(uint8_t *command, uint8_t length)
     {
         if (length == 0) return;
         
-        // Ê¹ÓÃ RCLCPP_INFO À´´òÓ¡£¬¸ü·ûºÏROS2µÄ·ç¸ñ
-        // ĞèÒªÒ»¸öNodeµÄLoggerÊµÀı£¬ÕâÀïÔİÊ±ÓÃprintf
+        // ä½¿ç”¨ RCLCPP_INFO æ¥æ‰“å°ï¼Œæ›´ç¬¦åˆROS2çš„é£æ ¼
+        // éœ€è¦ä¸€ä¸ªNodeçš„Loggerå®ä¾‹ï¼Œè¿™é‡Œæš‚æ—¶ç”¨printf
         printf("Parsed Command (length: %d): ", length);
         for(uint8_t i = 0; i < length; ++i)
         {
@@ -125,7 +125,7 @@ private:
         return buffer[index % BUFFER_SIZE];
     }
     
-    // [ĞŞÕı] ĞŞÕıÁËÆ´Ğ´´íÎóºÍÓï·¨
+    // [ä¿®æ­£] ä¿®æ­£äº†æ‹¼å†™é”™è¯¯å’Œè¯­æ³•
     void Command_AddReadIndex(uint8_t length)
     {
         readIndex = (readIndex + length) % BUFFER_SIZE;
@@ -138,7 +138,7 @@ private:
 
     uint8_t Command_GetRemain() 
     {
-        // ¼õ1ÊÇÎªÁË·ÀÖ¹¶ÁĞ´Ö¸ÕëÖØºÏÊ±ÎŞ·¨Çø·ÖÊÇ¿Õ»¹ÊÇÂú
+        // å‡1æ˜¯ä¸ºäº†é˜²æ­¢è¯»å†™æŒ‡é’ˆé‡åˆæ—¶æ— æ³•åŒºåˆ†æ˜¯ç©ºè¿˜æ˜¯æ»¡
         return BUFFER_SIZE - Command_GetLength() - 1;
     }
 };
@@ -148,24 +148,24 @@ class SubscriberNode : public rclcpp::Node
 {
 public:
     SubscriberNode()
-    : Node("topic_helloworld_sub")      // ROS2½Úµã¸¸Àà³õÊ¼»¯
+    : Node("topic_helloworld_sub")      // ROS2èŠ‚ç‚¹çˆ¶ç±»åˆå§‹åŒ–
     {
         subscription_ = this->create_subscription<std_msgs::msg::String>(
-            "RS485", 10, std::bind(&SubscriberNode::topic_callback, this, _1)); // ´´½¨¶©ÔÄÕß
+            "RS485", 10, std::bind(&SubscriberNode::topic_callback, this, _1)); // åˆ›å»ºè®¢é˜…è€…
     }
 
 private:
-    // [ĞŞ¸Ä] »Øµ÷º¯ÊıÂß¼­
+    // [ä¿®æ”¹] å›è°ƒå‡½æ•°é€»è¾‘
     void topic_callback(const std_msgs::msg::String::SharedPtr msg)
     {
         RCLCPP_INFO(this->get_logger(), "Received raw data with size: %zu", msg->data.length());
         
-        // ½«ÊÕµ½µÄÊı¾İĞ´Èë»·ĞÎ»º³åÇø
-        // ×¢Òâ£ºstd_msgs::msg::String µÄ data ÊÇ std::string£¬¿ÉÄÜ°üº¬\0£¬²»ÊÊºÏÓÃc_str()ºó¼ÆËã³¤¶È
-        // ÎÒÃÇÖ±½ÓÊ¹ÓÃ .data() ºÍ .length()
+        // å°†æ”¶åˆ°çš„æ•°æ®å†™å…¥ç¯å½¢ç¼“å†²åŒº
+        // æ³¨æ„ï¼šstd_msgs::msg::String çš„ data æ˜¯ std::stringï¼Œå¯èƒ½åŒ…å«\0ï¼Œä¸é€‚åˆç”¨c_str()åè®¡ç®—é•¿åº¦
+        // æˆ‘ä»¬ç›´æ¥ä½¿ç”¨ .data() å’Œ .length()
         ring_buffer_.Command_Write(reinterpret_cast<const uint8_t*>(msg->data.data()), msg->data.length());
 
-        // Ñ­»·³¢ÊÔ´Ó»º³åÇøÖĞ½âÎöÖ¸Áî
+        // å¾ªç¯å°è¯•ä»ç¼“å†²åŒºä¸­è§£ææŒ‡ä»¤
         while(true)
         {
             uint8_t command_buffer[BUFFER_SIZE];
@@ -173,32 +173,32 @@ private:
 
             if (command_length > 0)
             {
-                // Èç¹û½âÎö³É¹¦£¬µ÷ÓÃ´òÓ¡º¯Êı
+                // å¦‚æœè§£ææˆåŠŸï¼Œè°ƒç”¨æ‰“å°å‡½æ•°
                 RCLCPP_INFO(this->get_logger(), "Successfully parsed a command!");
                 ring_buffer_.Command_Print(command_buffer, command_length);
             }
             else
             {
-                // Èç¹û»º³åÇøÖĞÃ»ÓĞÍêÕûµÄÖ¸ÁîÁË£¬¾ÍÍË³öÑ­»·£¬µÈ´ıÏÂÒ»ÅúÊı¾İ
+                // å¦‚æœç¼“å†²åŒºä¸­æ²¡æœ‰å®Œæ•´çš„æŒ‡ä»¤äº†ï¼Œå°±é€€å‡ºå¾ªç¯ï¼Œç­‰å¾…ä¸‹ä¸€æ‰¹æ•°æ®
                 break;
             }
         }
     }
     
-    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr subscription_; // ¶©ÔÄÕßÖ¸Õë
-    Buff_Ring ring_buffer_; // Ìí¼ÓÒ»¸ö»·ĞÎ»º³åÇø¶ÔÏó
+    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr subscription_; // è®¢é˜…è€…æŒ‡é’ˆ
+    Buff_Ring ring_buffer_; // æ·»åŠ ä¸€ä¸ªç¯å½¢ç¼“å†²åŒºå¯¹è±¡
 };
 
-// ROS2½ÚµãÖ÷Èë¿Úmainº¯Êı
+// ROS2èŠ‚ç‚¹ä¸»å…¥å£mainå‡½æ•°
 int main(int argc, char * argv[])
 {
-    // ROS2 C++½Ó¿Ú³õÊ¼»¯
+    // ROS2 C++æ¥å£åˆå§‹åŒ–
     rclcpp::init(argc, argv);
     
-    // ´´½¨ROS2½Úµã¶ÔÏó²¢½øĞĞ³õÊ¼»¯
+    // åˆ›å»ºROS2èŠ‚ç‚¹å¯¹è±¡å¹¶è¿›è¡Œåˆå§‹åŒ–
     rclcpp::spin(std::make_shared<SubscriberNode>());
     
-    // ¹Ø±ÕROS2 C++½Ó¿Ú
+    // å…³é—­ROS2 C++æ¥å£
     rclcpp::shutdown();
     
     return 0;
